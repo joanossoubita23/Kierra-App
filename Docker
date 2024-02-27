@@ -1,0 +1,28 @@
+# Use official Node.js LTS (Long Term Support) image as base
+FROM node:lts AS build
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json (if exists)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the React/Vite application
+RUN npm run build
+
+# Start a new stage for serving the built files
+FROM nginx:alpine
+
+#
+
+# Expose port 80 (default for HTTP)
+EXPOSE 80
+
+# Start nginx server to serve the built files
+CMD ["nginx", "-g", "daemon off;"]
